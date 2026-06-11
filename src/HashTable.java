@@ -241,6 +241,24 @@ public class HashTable<T> {
 
     /**** Additional Methods ****/
 
+    // added so we can grab all songs for saving to file and stats
+    /**
+     * Returns all elements in the table as an ArrayList.
+     * @return an ArrayList of every element
+     */
+    public ArrayList<T> getAllElements() {
+        ArrayList<T> all = new ArrayList<>();
+        for (int i = 0; i < table.getLength(); i++) {
+            LinkedList<T> list = table.get(i);
+            list.positionIterator();
+            while (!list.offEnd()) {
+                all.add(list.getIterator());
+                list.advanceIterator();
+            }
+        }
+        return all;
+    }
+
     /**
      * Creates a String of the bucket number followed by a colon followed by
      * the first element at each bucket followed by a new line.

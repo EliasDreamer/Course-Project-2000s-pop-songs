@@ -396,6 +396,28 @@ public class BST<T> {
         }
     }
 
+    // added this for the search engine so it can return results as a list
+    /**
+     * Returns the data in order as an ArrayList.
+     * @return an ArrayList of the data in order
+     */
+    public ArrayList<T> toArrayListInOrder() {
+        ArrayList<T> list = new ArrayList<>();
+        toArrayListInOrder(root, list);
+        return list;
+    }
+
+    /**
+     * Helper for toArrayListInOrder.
+     */
+    private void toArrayListInOrder(Node node, ArrayList<T> list) {
+        if (node != null) {
+            toArrayListInOrder(node.left, list);
+            list.add(node.data);
+            toArrayListInOrder(node.right, list);
+        }
+    }
+
     /**
      * Returns a String containing the data in post order followed by a new line.
      * @return a String of data in post order.
