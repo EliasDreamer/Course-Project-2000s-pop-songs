@@ -1,85 +1,143 @@
-public class SearchEngine<T> {
-    private ArrayList<BST<T>> arrayOfTree;
-    private HashTable<WordsID> wordsIDHashTable;
+/**
+ * SearchEngine.java
+ * CIS 22C Course Project
+ * @author Jake Simpson
+ */
+public class SearchEngine {
+    private ArrayList<BST<Song>> index;
+    private HashTable<WordID> wordTable;
+    private TitleComparator cmp;
+    private int nextId;
 
-    //Maybe use this as the wordsID is better
-    //Because we have 0,1,2,3,.... for "time", "love", "life"
-    private int numOfValidWords;
-    /*Constructor*/
+    // stop words
+    private static final String[] STOP_WORDS = {
+        "the", "a", "an", "and", "or", "but", "if", "of", "to", "in",
+        "on", "at", "for", "with", "is", "are", "was", "were", "be",
+        "been", "am", "it", "its", "this", "that", "these", "those",
+        "i", "you", "he", "she", "we", "they", "me", "my", "your",
+        "so", "as", "by", "up", "out", "no", "not", "do", "all"
+    };
 
-    public SearchEngine(int size) throws IllegalArgumentException{
-        if (size <= 0) {
-            throw new IllegalArgumentException("Size must be greater than 0.");
+    /***CONSTRUCTORS***/
+
+    /**
+     * Builds an empty search engine.
+     * @param wordTableSize the number of buckets for the word hash table
+     */
+    public SearchEngine(int wordTableSize) {
+        index = new ArrayList<>();
+        wordTable = new HashTable<>(wordTableSize);
+        cmp = new TitleComparator();
+        nextId = 0;
+    }
+
+    /***MUTATORS***/
+
+    /**
+     * adds a song to the inverted index
+     * @param song the song to index
+     */
+    public void addSong(Song song) {
+        String[] words = tokenize(song.getText());
+        for (String w : words) {
+            if (isStopWord(w)) {
+                continue;
+            }
+            int id = getOrCreateId(w);
+            BST<Song> tree = index.get(id);
+
+            // only file the song once per word even if word repeats
+            if (tree.search(song, cmp) == null) {
+                tree.insert(song, cmp);
+            }
         }
-        this.arrayOfTree = new ArrayList<BST<T>>();
-        for(int i = 0; i < size; i++){
-            arrayOfTree.add(new BST<T>());
+    }
+
+    /**
+     * removes a song from all word trees
+     * @param song the song to remove
+     */
+    public void removeSong(Song song) {
+        // TODO: break text into words, skip stop words
+        // find the word in wordTable, get its tree
+        // then remove the song from that tree
+    }
+
+    /***ACCESSORS***/
+
+    /**
+     * keyword search that returns a sorted list of songs
+     * @param word the word to search for
+     * @return list of matching songs
+     */
+    public ArrayList<Song> search(String word) {
+        WordID found = wordTable.get(new WordID(word.toLowerCase()));
+        if (found == null) {
+            return new ArrayList<>();
         }
-        this.wordsIDHashTable = new HashTable<>(size);
+        return index.get(found.getId()).toArrayListInOrder();
     }
 
-    public SearchEngine(ArrayList<BST<T>> arrayOfTree,HashTable<WordsID> wordsIDHashTable){
-
-    }
-
-    /*Accessors*/
-
-    /*
-     *Using the given keyWord("time","love") to find the corresponding tree
-     *which contains all the songs that have the keyWord
-     *(It can be private)
-     * because I think in outside class we may just want to add the songs into the engine
+    /**
+     * counts how many words are actually indexed right now
+     * @return the number of valid words
      */
-    public BST<T> findTree(String keyWord){
-        return null;
+    public int getIndexedWordCount() {
+        // TODO: count the non empty trees in the index
+        return 0;
     }
 
-    /*
-     *With given keyWord find the ID of the word in the wordsIDHashTable
-     *(use hash value of the keyWord to implement this method maybe)
-     * (It can be a private method)
+    /***PRIVATE HELPERS***/
+
+    /**
+     * Looks up the id for a word, creating a new id and empty tree
+     * the first time we see that word.
+     * @param word the word to look up
+     * @return the id (ArrayList slot) for the word
      */
-    public int findWordsID(String keyWord){
-        return -1;
+    private int getOrCreateId(String word) {
+        WordID found = wordTable.get(new WordID(word));
+        if (found != null) {
+            return found.getId();
+        }
+        // new word: give it the next id and add an empty tree
+        int id = nextId++;
+        wordTable.add(new WordID(word, id));
+        index.add(new BST<Song>());
+        return id;
     }
 
-
-    /*Mutators*/
-
-    /*
-     * When this method is being called,
-     * firstly get rid of all the invalid words,(I think we can write more private method to make the code looks better)
-     * store all the valid words into the wordsIDHashTable
-     * the add the songs to the correct trees
+    /**
+     * Splits text into lowercase words. Anything that is not a
+     * letter or digit counts as a separator.
+     * @param text the text to split
+     * @return an array of words
      */
-    public void addSongs(T songs){
-
+    private String[] tokenize(String text) {
+        if (text == null) {
+            return new String[0];
+        }
+        String cleaned = text.toLowerCase().trim();
+        if (cleaned.isEmpty()) {
+            return new String[0];
+        }
+        return cleaned.split("[^a-z0-9]+");
     }
 
-    /*
-     * When adding songs to the SearchEngine, automatically invoke this function,
-     * so that all the valid keywords can be stored in the wordsIDHashTable
-     * Using the given lyrics add all those valid words into the wordsIDHashTable
-     * Can't add the same word to the table
+    /**
+     * Checks if a word is on the stop word list.
+     * @param word the word to check
+     * @return whether it should be skipped
      */
-    private void addWordID(String lyrics){
-
+    private boolean isStopWord(String word) {
+        if (word.isEmpty()) {
+            return true;
+        }
+        for (int i = 0; i < STOP_WORDS.length; i++) {
+            if (STOP_WORDS[i].equals(word)) {
+                return true;
+            }
+        }
+        return false;
     }
-
-    /*Display method*/
-
-    /*
-     * output the names of the songs in order
-     * 1.Attention
-     * 2.Baby
-     * 3....
-     * Those names of the songs are all stored in one tree
-     * So we may use BST inOrderString()
-     */
-
-
-    public String getTheSongs(String keyWords){
-        return "";
-    }
-
 }
