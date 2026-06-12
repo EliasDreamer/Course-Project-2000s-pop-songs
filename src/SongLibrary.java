@@ -182,10 +182,40 @@ public class SongLibrary {
      * @throws IOException if the file cannot be written
      */
     public void saveToFile(String fileName) throws IOException {
-        // TODO: write songs to file
+        try (BufferedWriter writer =
+                     new BufferedWriter(new FileWriter(fileName))) {
+            ArrayList<Song> songs = getAllSongs();
+            for (int i = 0; i < songs.getLength(); i++) {
+                Song song = songs.get(i);
+                writer.write("title:  " + valueOrEmpty(song.getTitle()));
+                writer.newLine();
+                writer.write("artist: " + valueOrEmpty(song.getArtist()));
+                writer.newLine();
+                writer.write("year:   " + song.getYear());
+                writer.newLine();
+                writer.write("text:   " + valueOrEmpty(song.getText()));
+                writer.newLine();
+
+                if (i < songs.getLength() - 1) {
+                    writer.newLine();
+                }
+            }
+        }
     }
 
     /***PRIVATE HELPERS***/
+
+    /**
+     * Converts null field values to empty strings before writing records.
+     */
+    private String valueOrEmpty(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value;
+    }
+
+
 
     /**
      * Checks whether a line starts with the given label.

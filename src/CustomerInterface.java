@@ -105,9 +105,30 @@ public class CustomerInterface {
         String artist = prompt("Artist: ");
         int year = promptYear();
         String text = prompt("Text or keywords: ");
-        library.addSong(new Song(title, artist, year, text));
-        System.out.println("Added \"" + title + "\".");
+        if (library.addSong(new Song(title, artist, year, text))) {
+            if (saveDefaultFile()) {
+                System.out.println("Added \"" + title + "\" and saved it to "
+                        + DEFAULT_FILE + ".");
+            }
+        } else {
+            System.out.println("Could not add \"" + title + "\".");
+        }
     }
+
+    /**
+     * Saves the current library to the default song file.
+     */
+    private static boolean saveDefaultFile() {
+        try {
+            library.saveToFile(DEFAULT_FILE);
+            return true;
+        } catch (IOException e) {
+            System.out.println("Added the song in memory, but could not write to "
+                    + DEFAULT_FILE + ".");
+            return false;
+        }
+    }
+
 
     /**
      * Menu option 2: remove a song by title.
