@@ -16,7 +16,27 @@ public class TitleComparator implements Comparator<Song> {
      */
     @Override
     public int compare(Song a, Song b) {
-        // TODO: alphabetical by title, case insensitive
-        return 0;
+        if (a == b) {
+            return 0;
+        }
+        if (a == null) {
+            return -1;
+        }
+        if (b == null) {
+            return 1;
+        }
+
+        String aTitle = a.getTitle();
+        String bTitle = b.getTitle();
+        if (aTitle == bTitle) {
+            return 0;
+        }
+        if (aTitle == null) {
+            return -1;
+        }
+        if (bTitle == null) {
+            return 1;
+        }
+        return aTitle.compareToIgnoreCase(bTitle);
     }
 }

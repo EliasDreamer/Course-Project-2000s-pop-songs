@@ -55,8 +55,17 @@ public class WordID {
      */
     @Override
     public boolean equals(Object obj) {
-        // TODO: compare word, ignore case
-        return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof WordID)) {
+            return false;
+        }
+        WordID other = (WordID) obj;
+        if (word == null) {
+            return other.word == null;
+        }
+        return word.equalsIgnoreCase(other.word);
     }
 
     /**
@@ -65,8 +74,10 @@ public class WordID {
      */
     @Override
     public int hashCode() {
-        // TODO: base on word
-        return 0;
+        if (word == null) {
+            return 0;
+        }
+        return word.toLowerCase().hashCode();
     }
 
     /**

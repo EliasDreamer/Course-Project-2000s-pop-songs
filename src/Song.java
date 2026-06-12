@@ -114,8 +114,17 @@ public class Song {
      */
     @Override
     public boolean equals(Object obj) {
-        // TODO: check same title, ignore case
-        return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Song)) {
+            return false;
+        }
+        Song other = (Song) obj;
+        if (title == null) {
+            return other.title == null;
+        }
+        return title.equalsIgnoreCase(other.title);
     }
 
     /**
@@ -124,8 +133,10 @@ public class Song {
      */
     @Override
     public int hashCode() {
-        // TODO: base on title
-        return 0;
+        if (title == null) {
+            return 0;
+        }
+        return title.toLowerCase().hashCode();
     }
 
     /**
@@ -142,7 +153,9 @@ public class Song {
      * @return every field on its own line
      */
     public String toDetailString() {
-        // TODO: show all fields on separate lines
-        return toString();
+        return "Title: " + title + "\n"
+                + "Artist: " + artist + "\n"
+                + "Year: " + year + "\n"
+                + "Text: " + text;
     }
 }
