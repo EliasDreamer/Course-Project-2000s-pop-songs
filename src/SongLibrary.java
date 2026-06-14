@@ -75,6 +75,70 @@ public class SongLibrary {
         return songTable.getAllElements();
     }
 
+    /**
+     * Finds the oldest song in the library.
+     * @return the oldest Song, or null if the library is empty
+     */
+    public Song getOldestSong() {
+        ArrayList<Song> songs = getAllSongs();
+
+        if (songs.getLength() == 0) {
+            return null;
+        }
+
+        Song oldest = songs.get(0);
+
+        for (int i = 1; i < songs.getLength(); i++) {
+            if (songs.get(i).getYear() < oldest.getYear()) {
+                oldest = songs.get(i);
+            }
+        }
+
+        return oldest;
+    }
+
+    /**
+     * Finds the newest song in the library.
+     * @return the newest Song, or null if the library is empty
+     */
+    public Song getNewestSong() {
+        ArrayList<Song> songs = getAllSongs();
+
+        if (songs.getLength() == 0) {
+            return null;
+        }
+
+        Song newest = songs.get(0);
+
+        for (int i = 1; i < songs.getLength(); i++) {
+            if (songs.get(i).getYear() > newest.getYear()) {
+                newest = songs.get(i);
+            }
+        }
+
+        return newest;
+    }
+
+    /**
+     * Calculates the average year of all songs in the library.
+     * @return the average year, or 0 when the library is empty
+     */
+    public double getAverageYear() {
+        ArrayList<Song> songs = getAllSongs();
+
+        if (songs.getLength() == 0) {
+            return 0;
+        }
+
+        int total = 0;
+
+        for (int i = 0; i < songs.getLength(); i++) {
+            total += songs.get(i).getYear();
+        }
+
+        return (double) total / songs.getLength();
+    }
+
     /***MUTATORS***/
 
     /**
