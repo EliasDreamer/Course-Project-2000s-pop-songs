@@ -61,6 +61,27 @@ public class SearchEngine {
         // TODO: break text into words, skip stop words
         // find the word in wordTable, get its tree
         // then remove the song from that tree
+   if (song == null || song.getText() == null) {
+            return;
+        }
+
+        String[] words = tokenize(song.getText());
+        
+        for (String w : words) {
+            if (isStopWord(w)) {
+                continue;
+            }
+
+            WordID found = wordTable.get(new WordID(w));
+
+            if (found != null) {
+                int id = found.getId();
+                BST<Song> tree = index.get(id);
+                if (tree.search(song, cmp) != null) {
+                    tree.remove(song, cmp);
+                }
+            }
+        }
     }
 
     /***ACCESSORS***/
