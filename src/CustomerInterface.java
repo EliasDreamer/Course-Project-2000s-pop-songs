@@ -135,7 +135,35 @@ public class CustomerInterface {
      */
     private static void deleteRecord() {
         // TODO
+
         System.out.println("\n--- Delete a Song ---");
+        System.out.println("1. Find one song by title (primary key)");
+        System.out.println("2. Find songs by keyword (search engine)");
+        String choice = prompt("Choose an option: ");
+
+        if (choice.equals("1")) {
+            searchByTitle();
+        } else if (choice.equals("2")) {
+            String word = prompt("Keyword: ").toLowerCase();
+            ArrayList<Song> results = library.search(word);
+            if (results.getLength() == 0) {
+                System.out.println("No songs contain the word \"" + word + "\".");
+                return;
+            }
+            System.out.println("\nThe following songs contain the word \""
+                    + word + "\":");
+            for (int i = 0; i < results.getLength(); i++) {
+                System.out.println((i + 1) + ". " + results.get(i).getTitle());
+            }
+            System.out.print("Choose a song to delete: ");
+            int choice2 = keyboard.nextInt() - 1;
+
+            library.deleteSong(results.get(choice2).getTitle());
+
+        } else {
+            System.out.println("Please enter 1 or 2.");
+        }
+
     }
 
     /**
@@ -174,7 +202,7 @@ public class CustomerInterface {
      * Runs a keyword search and shows matching titles.
      */
     private static void searchByKeyword() {
-        String word = prompt("Keyword: ").toLowerCase();
+        String word = prompt("Keyword: ").toLowerCase(); 
         ArrayList<Song> results = library.search(word);
 
         if (results.getLength() == 0) {

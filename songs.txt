@@ -63,11 +63,6 @@ artist: Katy Perry
 year:   2008
 text:   A bright pop song about a partner who keeps changing their mind, switching moods up and down without warning.
 
-title:  Complicated
-artist: Avril Lavigne
-year:   2002
-text:   A pop rock track about a friend who acts fake around others, asking why life and people have to be so complicated.
-
 title:  I Gotta Feeling
 artist: The Black Eyed Peas
 year:   2009
