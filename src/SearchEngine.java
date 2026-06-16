@@ -109,7 +109,8 @@ public class SearchEngine {
         int count = 0;
 
         // Loop through every tree in the index array
-        for (BST<Song> tree : index) {
+        for (int i = 0; i < index.getLength(); i++) {
+            BST<Song> tree = index.get(i);
             // Check if the tree has any songs in it
             if (!tree.isEmpty()) {
                 count++;

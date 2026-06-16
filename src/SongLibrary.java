@@ -176,7 +176,12 @@ public class SongLibrary {
      * @param newText the new searchable text
      */
     public void updateText(Song song, String newText) {
-        // TODO
+        if (song == null) {
+            return;
+        }
+        engine.removeSong(song);
+        song.setText(newText);
+        engine.addSong(song);
     }
 
     /**
@@ -186,8 +191,20 @@ public class SongLibrary {
      * @return true if renamed, false if another song has that title
      */
     public boolean changeTitle(Song song, String newTitle) {
-        // TODO
-        return false;
+        if (song == null || newTitle == null || newTitle.trim().isEmpty()) {
+            return false;
+        }
+        Song duplicate = findByTitle(newTitle);
+        if (duplicate != null && duplicate != song) {
+            return false;
+        }
+
+        engine.removeSong(song);
+        songTable.delete(song);
+        song.setTitle(newTitle.trim());
+        songTable.add(song);
+        engine.addSong(song);
+        return true;
     }
 
     /***FILE I/O***/
@@ -203,6 +220,7 @@ public class SongLibrary {
         String title = "";
         String artist = "";
         int year = 0;
+        String genre = "";
         String text = "";
 
         try (BufferedReader reader =
@@ -213,12 +231,13 @@ public class SongLibrary {
                 String trimmed = line.trim();
                 if (trimmed.isEmpty()) {
                     if (!title.isEmpty()
-                            && addSong(new Song(title, artist, year, text))) {
+                            && addSong(new Song(title, artist, year, genre, text))) {
                         count++;
                     }
                     title = "";
                     artist = "";
                     year = 0;
+                    genre = "";
                     text = "";
                 } else if (hasLabel(trimmed, "title:")) {
                     title = valueOf(trimmed);
@@ -226,6 +245,8 @@ public class SongLibrary {
                     artist = valueOf(trimmed);
                 } else if (hasLabel(trimmed, "year:")) {
                     year = parseYear(valueOf(trimmed));
+                } else if (hasLabel(trimmed, "genre:")) {
+                    genre = valueOf(trimmed);
                 } else if (hasLabel(trimmed, "text:")) {
                     text = valueOf(trimmed);
                 }
@@ -233,7 +254,7 @@ public class SongLibrary {
             }
             // save the last song if file didn't end with blank line
             if (!title.isEmpty()
-                    && addSong(new Song(title, artist, year, text))) {
+                    && addSong(new Song(title, artist, year, genre, text))) {
                 count++;
             }
         }
@@ -256,6 +277,8 @@ public class SongLibrary {
                 writer.write("artist: " + valueOrEmpty(song.getArtist()));
                 writer.newLine();
                 writer.write("year:   " + song.getYear());
+                writer.newLine();
+                writer.write("genre:  " + valueOrEmpty(song.getGenre()));
                 writer.newLine();
                 writer.write("text:   " + valueOrEmpty(song.getText()));
                 writer.newLine();
