@@ -7,6 +7,7 @@ public class Song {
     private String title;
     private String artist;
     private int year;
+    private String genre;
     private String text;
 
     /***CONSTRUCTORS***/
@@ -19,9 +20,22 @@ public class Song {
      * @param text the searchable text for this song
      */
     public Song(String title, String artist, int year, String text) {
+        this(title, artist, year, "", text);
+    }
+
+    /**
+     * Full constructor including genre.
+     * @param title the song title (primary key)
+     * @param artist the performing artist
+     * @param year the year the song came out
+     * @param genre the song genre or type
+     * @param text the searchable text for this song
+     */
+    public Song(String title, String artist, int year, String genre, String text) {
         this.title = title;
         this.artist = artist;
         this.year = year;
+        this.genre = genre;
         this.text = text;
     }
 
@@ -66,6 +80,14 @@ public class Song {
      * Returns the searchable text for this song.
      * @return the text
      */
+    public String getGenre() {
+        return genre;
+    }
+
+    /**
+     * Returns the searchable text for this song.
+     * @return the text
+     */
     public String getText() {
         return text;
     }
@@ -94,6 +116,14 @@ public class Song {
      */
     public void setYear(int year) {
         this.year = year;
+    }
+
+    /**
+     * Changes the text.
+     * @param genre the new genre
+     */
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     /**
@@ -156,6 +186,7 @@ public class Song {
         return "Title: " + title + "\n"
                 + "Artist: " + artist + "\n"
                 + "Year: " + year + "\n"
+                + "Genre: " + genre + "\n"
                 + "Text: " + text;
     }
 }
