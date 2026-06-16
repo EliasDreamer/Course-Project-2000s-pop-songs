@@ -1,7 +1,7 @@
 /**
  * SearchEngine.java
  * CIS 22C Course Project
- * @author Jake Simpson
+ * @author CIS 22C Team
  */
 public class SearchEngine {
     private ArrayList<BST<Song>> index;
@@ -58,15 +58,12 @@ public class SearchEngine {
      * @param song the song to remove
      */
     public void removeSong(Song song) {
-        // TODO: break text into words, skip stop words
-        // find the word in wordTable, get its tree
-        // then remove the song from that tree
-   if (song == null || song.getText() == null) {
+        if (song == null || song.getText() == null) {
             return;
         }
 
         String[] words = tokenize(song.getText());
-        
+
         for (String w : words) {
             if (isStopWord(w)) {
                 continue;
@@ -104,16 +101,12 @@ public class SearchEngine {
      * @return the number of valid words
      */
     public int getIndexedWordCount() {
-        // TODO: count the non empty trees in the index
         int count = 0;
-        
         for (int i = 0; i < index.getLength(); i++) {
- 
-            if (!index.get(i).isEmpty()) { 
+            if (!index.get(i).isEmpty()) {
                 count++;
             }
         }
-        
         return count;
     }
 
