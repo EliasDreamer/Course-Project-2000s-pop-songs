@@ -105,17 +105,15 @@ public class SearchEngine {
      */
     public int getIndexedWordCount() {
         // TODO: count the non empty trees in the index
-
         int count = 0;
-
-        // Loop through every tree in the index array
-        for (BST<Song> tree : index) {
-            // Check if the tree has any songs in it
-            if (!tree.isEmpty()) {
+        
+        for (int i = 0; i < index.getLength(); i++) {
+ 
+            if (!index.get(i).isEmpty()) { 
                 count++;
             }
         }
-
+        
         return count;
     }
 
