@@ -105,7 +105,22 @@ public class SearchEngine {
      */
     public int getIndexedWordCount() {
         // TODO: count the non empty trees in the index
-        return 0;
+         public int getIndexedWordCount() {
+        // TODO: count the non empty trees in the index
+    	public int getIndexedWordCount() {
+            int count = 0;
+            
+            // Loop through every tree in the index array
+            for (BST<Song> tree : index) {
+                // Check if the tree has any songs in it
+                if (!tree.isEmpty()) { 
+                    count++;
+                }
+            }
+            
+            return count;
+        }
+    }
     }
 
     /***PRIVATE HELPERS***/
