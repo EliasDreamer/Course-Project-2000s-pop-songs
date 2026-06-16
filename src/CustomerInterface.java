@@ -4,7 +4,7 @@ import java.util.Scanner;
 /**
  * CustomerInterface.java
  * CIS 22C Course Project
- * @author
+ * @author CIS 22C Team
  */
 public class CustomerInterface {
     private static final String DEFAULT_FILE = "songs.txt";
@@ -231,7 +231,6 @@ public class CustomerInterface {
      * Menu option 4: update an existing song.
      */
     private static void updateRecord() {
-        // TODO
         System.out.println("\n--- Modify a Song ---");
         Song song = chooseSongFromSearch();
         if (song == null) {
@@ -284,6 +283,7 @@ public class CustomerInterface {
 
         System.out.println("Oldest song: " + library.getOldestSong());
         System.out.println("Newest song: " + library.getNewestSong());
+        System.out.printf("Average year: %.1f%n", library.getAverageYear());
         printYearPercentages(songs, total);
         printGenrePercentages(songs, total);
     }
