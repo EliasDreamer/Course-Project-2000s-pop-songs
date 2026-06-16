@@ -1,7 +1,7 @@
 /**
  * Song.java
  * CIS 22C Course Project
- * @author
+ * @author CIS 22C Team
  */
 public class Song {
     private String title;
