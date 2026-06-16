@@ -7,11 +7,12 @@ import java.io.IOException;
 /**
  * SongLibrary.java
  * CIS 22C Course Project
- * @author
+ * @author CIS 22C Team
  */
 public class SongLibrary {
     private HashTable<Song> songTable;
     private SearchEngine engine;
+    private TitleComparator titleCmp;
 
     /***CONSTRUCTORS***/
 
@@ -23,6 +24,7 @@ public class SongLibrary {
     public SongLibrary(int songTableSize, int wordTableSize) {
         songTable = new HashTable<>(songTableSize);
         engine = new SearchEngine(wordTableSize);
+        titleCmp = new TitleComparator();
     }
 
     /***ACCESSORS***/
@@ -176,7 +178,6 @@ public class SongLibrary {
      * @param newText the new searchable text
      */
     public void updateText(Song song, String newText) {
-        // TODO
         if (song == null) {
             return;
         }
@@ -192,18 +193,18 @@ public class SongLibrary {
      * @return true if renamed, false if another song has that title
      */
     public boolean changeTitle(Song song, String newTitle) {
-        // TODO
         if (song == null || newTitle == null || newTitle.trim().isEmpty()) {
             return false;
         }
-        Song duplicate = findByTitle(newTitle);
+        String trimmed = newTitle.trim();
+        Song duplicate = findByTitle(trimmed);
         if (duplicate != null && duplicate != song) {
             return false;
         }
 
         engine.removeSong(song);
         songTable.delete(song);
-        song.setTitle(newTitle.trim());
+        song.setTitle(trimmed);
         songTable.add(song);
         engine.addSong(song);
         return true;
@@ -271,7 +272,7 @@ public class SongLibrary {
     public void saveToFile(String fileName) throws IOException {
         try (BufferedWriter writer =
                      new BufferedWriter(new FileWriter(fileName))) {
-            ArrayList<Song> songs = getAllSongs();
+            ArrayList<Song> songs = getSongsSortedByTitle();
             for (int i = 0; i < songs.getLength(); i++) {
                 Song song = songs.get(i);
                 writer.write("title:  " + valueOrEmpty(song.getTitle()));
@@ -293,6 +294,21 @@ public class SongLibrary {
     }
 
     /***PRIVATE HELPERS***/
+
+    /**
+     * Returns every song ordered alphabetically by title. Builds a temporary
+     * BST keyed by the TitleComparator and reads it back in order, so the saved
+     * file is always in a stable title order.
+     * @return all songs sorted by title
+     */
+    private ArrayList<Song> getSongsSortedByTitle() {
+        ArrayList<Song> all = getAllSongs();
+        BST<Song> tree = new BST<>();
+        for (int i = 0; i < all.getLength(); i++) {
+            tree.insert(all.get(i), titleCmp);
+        }
+        return tree.toArrayListInOrder();
+    }
 
     /**
      * Converts null field values to empty strings before writing records.
